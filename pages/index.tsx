@@ -1,12 +1,15 @@
 import { useState } from "react"
+import { CircleNotch } from 'phosphor-react'
 
 export default function Home() {
   const [nftsList, setNftsList] = useState([])
   const [walletAddress, setWalletAddress] = useState<string>('')
   const [collectionAddress, setCollectionAddress] = useState<string>('')
   const [isFetchForCollection, setIsFetchForCollection] = useState<boolean>(false)
+  const [isSearching, setIsSearching] = useState<boolean>(false)
 
   async function fetchNfts() {
+    setIsSearching(true)
     let nfts
     console.log("fetching nfts...")
 
@@ -22,6 +25,7 @@ export default function Home() {
       if (nfts) {
         console.log(nfts)
         setNftsList(nfts.ownedNfts)
+        setIsSearching(false)
       }
 
     } else {
@@ -35,11 +39,14 @@ export default function Home() {
       if (nfts) {
         console.log(nfts)
         setNftsList(nfts.ownedNfts)
+        setIsSearching(false)
       }
     }
+    setIsSearching(false)
   }
 
   async function fetchNFTsForCollection() {
+    setIsSearching(true)
     let nfts
     console.log("fetching for collection...")
 
@@ -52,8 +59,11 @@ export default function Home() {
 
       if (nfts) {
         console.log("Nfts in collection: ", nfts)
+        setIsSearching(false)
       }
     }
+
+    setIsSearching(false)
   }
 
 
@@ -85,7 +95,7 @@ export default function Home() {
           </label>
         </div>
         <button
-          className="mt-4 w-[300px] py-3 px-6 bg-green-500 rounded-md font-bold text-green-100 hover:bg-green-700 transtion duration-500" 
+          className="mt-4 w-[300px] py-3 px-6 bg-green-500 rounded-md font-bold text-green-100 shadow-xl hover:bg-green-700 transtion duration-500" 
           onClick={() => {
             if (isFetchForCollection) {
               fetchNFTsForCollection()
@@ -93,7 +103,15 @@ export default function Home() {
               fetchNfts()
             }
           }}>
-          Search
+          {isSearching ? (
+            <div className="flex items-center justify-center gap-x-4">
+              <p>Searching...</p>
+              <CircleNotch size={24} className="text-green-100 animate-spin"/>
+            </div>
+          ) : (
+            <p>Search</p>
+          )
+          }
         </button>
       </div>
     </div>
